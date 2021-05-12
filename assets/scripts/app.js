@@ -1,14 +1,10 @@
+import { BLELight } from './App/BLEDevices.js';
+import { DeviceTable } from './UI/DeviceTable.js';
+
 $('table').tablesort();
 $('#light-id-dropdown').dropdown();
 
 // Seed data
-const lights = [
-  { id: '123.456.789', name: 'Light-1', rssi: -19 },
-  { id: '234.567.891', name: 'Light-2', rssi: -28 },
-  { id: '345.678.912', name: 'Light-3', rssi: -37 },
-  { id: '456.789.123', name: 'Light-4', rssi: -46 },
-  { id: '567.891.234', name: 'Light-5', rssi: -55 }
-];
 let selectedLightId;
 
 const $lightIntensityRange = $('#light-intensity-range');
@@ -156,3 +152,52 @@ $('#light-values-save-btn').on('click', () => {
   $('#light-test-step').removeClass('disabled').addClass('active');
   $('#light-test-form').removeClass('hidden');
 });
+
+class App {
+  constructor() {
+    this.deviceList = [
+      { id: '123.456.789', name: 'Light-1', rssi: -19 },
+      { id: '234.567.891', name: 'Light-2', rssi: -28 },
+      { id: '345.678.912', name: 'Light-3', rssi: -37 },
+      { id: '456.789.123', name: 'Light-4', rssi: -46 },
+      { id: '567.891.234', name: 'Light-5', rssi: -55 }
+    ];
+    this.selectedDevice;
+  }
+
+  static init(renderHook) {
+    this.renderHook = $(`#${renderHook}`);
+
+    // Things the app needs
+
+    // DeviceTable
+    // .init() - Select from the DOM
+    // this.updateBtn
+    // .update(this.deviceList) - Updates TRs & initializes ConnectForm dropdown
+
+    // DeviceWizard
+    // .init() - Select from the DOM
+
+    // ConnectForm
+    // this.connectButton
+    // .init(isActive: true) - Select form and connect button from from the DOM
+    // .show()
+    // .hide()
+    // Connect button hides this & shows ConfigFrom
+
+    // ConfigForm
+    // .init(isActive: false) - Select form and back/save buttons from from the DOM
+    // .show()
+    // .hide()
+    // Back button hides this and shows ConnectForm
+    // Save button hides this and shows TestForm
+
+    // TestForm
+    // .init(isActive: false) - Select form and buttons (back, power-off, power-on, ???) from from the DOM
+    // .show()
+    // .hide()
+    // Back button hides this and shows ConfigForm
+  }
+}
+
+App.init('app');
