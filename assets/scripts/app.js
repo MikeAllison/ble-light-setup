@@ -33,7 +33,7 @@ $('#nearby-lights-refresh-btn').on('click', () => {
   $('#light-dropdown-values > *').remove();
 
   // Web Bluetooth API calls
-  options = { acceptAllDevices: true };
+  const options = { acceptAllDevices: true };
   navigator.bluetooth
     .requestDevice(options)
     .then(device => {
