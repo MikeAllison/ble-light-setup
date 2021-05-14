@@ -1,4 +1,5 @@
 import { deviceTable } from './layouts/device-table.js';
+import { configWizard } from './layouts/config-wizard.js';
 
 $('table').tablesort();
 $('#device-id-dropdown').dropdown();
