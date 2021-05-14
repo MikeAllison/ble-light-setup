@@ -3,233 +3,209 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Gallery Light Setup</title>
-    <link href="assets/lib/semantic-ui/semantic.min.css" rel="stylesheet" />
-    <link href="assets/styles/app.css" rel="stylesheet" />
-    <script src="assets/lib/util/jquery-3.1.1.min.js" defer></script>
-    <script src="assets/lib/semantic-ui/semantic.min.js" defer></script>
-    <script src="assets/lib/util/table-sort.js" defer></script>
-    <script src="assets/scripts/app.js" type="module" defer></script>
+    <title>Gallery device Setup</title>
+    <link href="/lib/semantic-ui/semantic.min.css" rel="stylesheet" />
+    <link href="/styles/app.css" rel="stylesheet" />
+    <script src="/lib/util/jquery-3.1.1.min.js" defer></script>
+    <script src="/lib/util/table-sort.js" defer></script>
+    <script src="/lib/semantic-ui/semantic.min.js" defer></script>
+    <script src="/index.js" type="module" defer></script>
   </head>
   <body>
-    <div class="ui container" id="app">
+    <div class="ui container">
       <!-- START ROW-1 -->
-      <div class="row one column grid" id="nearby-lights-section">
+      <div class="row one column grid" id="nearby-devices-section">
         <h1 class="ui header green">Nearby Lights</h1>
-        <table
-          class="ui very compact sortable celled inverted definition table"
-          id="device-table"
-        >
-          <thead class="full-width">
-            <tr class="center aligned">
-              <th class="four wide">ID</th>
-              <th class="four wide">Name</th>
-              <th class="four wide ascending">RSSI</th>
-              <th class="four wide"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- POPULATE TABLE ROWS -->
-          </tbody>
-          <tfoot class="full-width">
-            <tr>
-              <th colspan="3"></th>
-              <th class="center aligned" colspan="1">
-                <button
-                  class="ui green labeled icon button"
-                  id="nearby-lights-refresh-btn"
-                >
-                  <i class="sync icon"></i>Update
-                </button>
-              </th>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-      <!-- END ROW-1 -->
+        <table is="device-table" id="device-table"></table>
+        <!-- END ROW-1 -->
 
-      <!-- START ROW-2 -->
-      <div class="row one column grid" id="light-settings-section">
-        <!-- START STEPS PANEL -->
-        <div class="ui three top attached steps">
-          <div class="active step" id="light-connect-step">
-            <i class="lightbulb icon"></i>
-            <div class="content">
-              <div class="title">Connect</div>
-              <div class="description">Connect to a light</div>
+        <!-- START ROW-2 -->
+        <div class="row one column grid" id="device-settings-section">
+          <!-- START STEPS PANEL -->
+          <div class="ui three top attached steps">
+            <div class="active step" id="device-connect-step">
+              <i class="lightbulb icon"></i>
+              <div class="content">
+                <div class="title">Connect</div>
+                <div class="description">Connect to a device</div>
+              </div>
+            </div>
+            <div class="disabled step" id="device-values-step">
+              <i class="sliders horizontal icon"></i>
+              <div class="content">
+                <div class="title">Set Values</div>
+                <div class="description">Set the device's values</div>
+              </div>
+            </div>
+            <div class="disabled step" id="device-test-step">
+              <i class="power off icon"></i>
+              <div class="content">
+                <div class="title">Test</div>
+                <div class="description">Test power-on/off</div>
+              </div>
             </div>
           </div>
-          <div class="disabled step" id="light-values-step">
-            <i class="sliders horizontal icon"></i>
-            <div class="content">
-              <div class="title">Set Values</div>
-              <div class="description">Set the light's values</div>
+          <!-- START FORMS PANEL -->
+          <div class="ui attached segment">
+            <!-- START CONNECT FORM -->
+            <div class="ui form" id="device-connect-form">
+              <div class="centered">
+                <div class="field">
+                  <label>Device ID</label>
+                  <div class="ui selection dropdown" id="device-id-dropdown">
+                    <input type="hidden" />
+                    <i class="dropdown icon"></i>
+                    <div class="default text">Select Device ID</div>
+                    <div class="menu" id="device-dropdown-values">
+                      <!-- POPULATE VALUE -->
+                    </div>
+                  </div>
+                  <div
+                    class="ui disabled green labeled icon button"
+                    id="device-connect-btn"
+                  >
+                    <i class="wifi icon"></i>
+                    Connect
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="disabled step" id="light-test-step">
-            <i class="power off icon"></i>
-            <div class="content">
-              <div class="title">Test</div>
-              <div class="description">Test power-on/off</div>
-            </div>
-          </div>
-        </div>
-        <!-- START FORMS PANEL -->
-        <div class="ui attached segment">
-          <!-- START CONNECT FORM -->
-          <div class="ui form" id="light-connect-form">
-            <div class="centered">
-              <div class="field">
-                <label>Light ID</label>
-                <div class="ui selection dropdown" id="light-id-dropdown">
-                  <input type="hidden" />
-                  <i class="dropdown icon"></i>
-                  <div class="default text">Select Light ID</div>
-                  <div class="menu" id="light-dropdown-values">
+            <!-- END CONNECT FORM -->
+
+            <!-- START VALUES FORM -->
+            <div class="ui hidden form" id="device-values-form">
+              <div class="centered">
+                <div class="ui green statistic device-id-heading">
+                  <div class="label">Device ID</div>
+                  <div class="value">
                     <!-- POPULATE VALUE -->
                   </div>
                 </div>
-                <div
-                  class="ui disabled green labeled icon button"
-                  id="light-connect-btn"
-                >
-                  <i class="wifi icon"></i>
-                  Connect
+              </div>
+              <div class="ui divider"></div>
+              <div class="one field">
+                <label
+                  for="device-intensity-range"
+                  id="device-intensity-label"
+                ></label>
+                <input
+                  type="range"
+                  id="device-intensity-range"
+                  name="device-intensity"
+                  min="0"
+                  max="100"
+                  step="0.1"
+                />
+              </div>
+              <div class="two fields">
+                <div class="field">
+                  <label>Max Intensity</label>
+                  <input
+                    type="number"
+                    id="device-intensity-max"
+                    placeholder=""
+                    min="0"
+                    max="100"
+                    step="1.0"
+                  />
+                </div>
+                <div class="field">
+                  <label>Power-On Intensity</label>
+                  <input
+                    type="number"
+                    id="device-intensity-power-on"
+                    placeholder=""
+                    min="0"
+                    max="100"
+                    step="1.0"
+                  />
+                </div>
+              </div>
+              <div class="two fields">
+                <div class="field">
+                  <div
+                    class="ui grey basic right floated labeled icon button"
+                    id="device-values-back-btn"
+                  >
+                    <i class="history icon"></i>
+                    Back
+                  </div>
+                </div>
+                <div class="field">
+                  <div
+                    class="ui green labeled icon button"
+                    id="device-values-save-btn"
+                  >
+                    <i class="save outline icon"></i>
+                    Save
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <!-- END CONNECT FORM -->
+            <!-- END VALUES FORM -->
 
-          <!-- START VALUES FORM -->
-          <div class="ui hidden form" id="light-values-form">
-            <div class="centered">
-              <div class="ui green statistic light-id-heading">
-                <div class="label">Light ID</div>
-                <div class="value">
-                  <!-- POPULATE VALUE -->
+            <!-- START TEST FORM -->
+            <div class="ui hidden form" id="device-test-form">
+              <div class="centered">
+                <div class="ui green statistic device-id-heading">
+                  <div class="label">Device ID</div>
+                  <div class="value">
+                    <!-- POPULATE VALUE -->
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="ui divider"></div>
-            <div class="one field">
-              <label
-                for="light-intensity-range"
-                id="light-intensity-label"
-              ></label>
-              <input
-                type="range"
-                id="light-intensity-range"
-                name="light-intensity"
-                min="0"
-                max="100"
-                step="0.1"
-              />
-            </div>
-            <div class="two fields">
-              <div class="field">
-                <label>Max Intensity</label>
-                <input
-                  type="number"
-                  id="light-intensity-max"
-                  placeholder=""
-                  min="0"
-                  max="100"
-                  step="1.0"
-                />
-              </div>
-              <div class="field">
-                <label>Power-On Intensity</label>
-                <input
-                  type="number"
-                  id="light-intensity-power-on"
-                  placeholder=""
-                  min="0"
-                  max="100"
-                  step="1.0"
-                />
-              </div>
-            </div>
-            <div class="two fields">
-              <div class="field">
+              <div class="ui divider"></div>
+              <div class="centered">
                 <div
-                  class="ui grey basic right floated labeled icon button"
-                  id="light-values-back-btn"
+                  class="ui green statistic"
+                  id="device-test-intensity-heading"
+                >
+                  <div class="label">Current Intensity</div>
+                  <div class="value">
+                    <!-- POPULATE VALUE -->
+                  </div>
+                </div>
+              </div>
+              <div class="ui divider"></div>
+              <div class="centered">
+                <div
+                  class="ui grey basic labeled icon button"
+                  id="device-test-back-btn"
                 >
                   <i class="history icon"></i>
                   Back
                 </div>
-              </div>
-              <div class="field">
+                <div
+                  class="ui black labeled icon button"
+                  id="device-test-power-off-btn"
+                >
+                  <i class="lightbulb outline icon"></i>
+                  Power-Off
+                </div>
                 <div
                   class="ui green labeled icon button"
-                  id="light-values-save-btn"
+                  id="device-test-power-on-btn"
                 >
-                  <i class="save outline icon"></i>
-                  Save
+                  <i class="lightbulb icon"></i>
+                  Power-On
                 </div>
+                <a
+                  href="/"
+                  class="ui green basic labeled icon button"
+                  id="device-test-reset-btn"
+                >
+                  <i class="redo alternate icon"></i>
+                  Start Over
+                </a>
               </div>
             </div>
+            <!-- END TEST FORM -->
           </div>
-          <!-- END VALUES FORM -->
-
-          <!-- START TEST FORM -->
-          <div class="ui hidden form" id="light-test-form">
-            <div class="centered">
-              <div class="ui green statistic light-id-heading">
-                <div class="label">Light ID</div>
-                <div class="value">
-                  <!-- POPULATE VALUE -->
-                </div>
-              </div>
-            </div>
-            <div class="ui divider"></div>
-            <div class="centered">
-              <div class="ui green statistic" id="light-test-intensity-heading">
-                <div class="label">Current Intensity</div>
-                <div class="value">
-                  <!-- POPULATE VALUE -->
-                </div>
-              </div>
-            </div>
-            <div class="ui divider"></div>
-            <div class="centered">
-              <div
-                class="ui grey basic labeled icon button"
-                id="light-test-back-btn"
-              >
-                <i class="history icon"></i>
-                Back
-              </div>
-              <div
-                class="ui black labeled icon button"
-                id="light-test-power-off-btn"
-              >
-                <i class="lightbulb outline icon"></i>
-                Power-Off
-              </div>
-              <div
-                class="ui green labeled icon button"
-                id="light-test-power-on-btn"
-              >
-                <i class="lightbulb icon"></i>
-                Power-On
-              </div>
-              <a
-                href="/"
-                class="ui green basic labeled icon button"
-                id="light-test-reset-btn"
-              >
-                <i class="redo alternate icon"></i>
-                Start Over
-              </a>
-            </div>
-          </div>
-          <!-- END TEST FORM -->
+          <!-- END FORMS PANEL -->
         </div>
-        <!-- END FORMS PANEL -->
+        <!-- END ROW-2 -->
       </div>
-      <!-- END ROW-2 -->
+      <!-- END #app -->
     </div>
     <!-- END .container -->
   </body>

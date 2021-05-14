@@ -15,12 +15,12 @@
   color: #21ba45;
 }
 
-#nearby-lights-section,
-#light-settings-section {
+#nearby-devices-section,
+#device-settings-section {
   margin-top: 20px;
 }
 
-#light-id-dropdown {
+#device-id-dropdown {
   width: 50%;
 }
 
