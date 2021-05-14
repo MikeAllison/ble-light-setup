@@ -1,6 +1,8 @@
-class DeviceTable extends HTMLTableElement {
-  constructor() {
+export class DeviceTable extends HTMLTableElement {
+  constructor(renderHook) {
     super();
+
+    this.renderHook = document.getElementById(renderHook);
 
     this.setAttribute(
       'class',
@@ -33,8 +35,39 @@ class DeviceTable extends HTMLTableElement {
       </tfoot>
     `;
   }
+
+  init() {
+    this.renderHook.append(this);
+  }
+
+  refresh(deviceList) {
+    const tbody = this.tBodies[0];
+
+    tbody.innerHTML = null;
+
+    deviceList.forEach(device => {
+      tbody.innerHTML += `
+        <tr class="center aligned">
+          <td>${device.id}</td>
+          <td>${device.name}</td>
+          <td>${device.rssi}</td>
+          <td>
+            <div class="ui inverted small green labeled icon button flash-device-btn" data-device-id="${device.id}">
+              <i class="bolt icon"></i>
+              Flash
+            </div>
+          </td>
+        </tr>
+      `;
+    });
+
+    // Add event listener to Device-Table > Flash buttons
+    const flashBtns = this.querySelectorAll('.flash-device-btn');
+    $('.flash-device-btn').on('click', event => {
+      // TODO: Push flashing to device
+      alert(`Flashing Light: ${event.target.dataset.deviceId}`);
+    });
+  }
 }
 
 customElements.define('device-table', DeviceTable, { extends: 'table' });
-
-export const deviceTable = new DeviceTable();

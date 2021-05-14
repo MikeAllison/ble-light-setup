@@ -1,6 +1,8 @@
-class ConfigWizard extends HTMLElement {
-  constructor() {
+export class ConfigWizard extends HTMLElement {
+  constructor(renderHook) {
     super();
+
+    this.renderHook = document.getElementById(renderHook);
 
     this.innerHTML = `
       <div class="ui three top attached steps">
@@ -182,8 +184,26 @@ class ConfigWizard extends HTMLElement {
       </div>
     `;
   }
+
+  init() {
+    this.renderHook.append(this);
+  }
+
+  render(deviceList) {
+    const deviceDropdownVals = document.getElementById(
+      'device-dropdown-values'
+    );
+
+    deviceDropdownVals.innerHTML = null;
+
+    // TODO: Sort values
+
+    deviceList.forEach(device => {
+      deviceDropdownVals.innerHTML += `
+        <div class="item" data-value="${device.id}">${device.id}</div>
+    `;
+    });
+  }
 }
 
 customElements.define('config-wizard', ConfigWizard);
-
-export const configWizard = new ConfigWizard();

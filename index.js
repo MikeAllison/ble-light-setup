@@ -1,16 +1,13 @@
-import { deviceTable } from './layouts/device-table.js';
-import { configWizard } from './layouts/config-wizard.js';
-
-$('table').tablesort();
-$('#device-id-dropdown').dropdown();
+import { DeviceTable } from './layouts/device-table.js';
+import { ConfigWizard } from './layouts/config-wizard.js';
 
 // Seed data
 const deviceList = [
   { id: '123.456.789', name: 'Device-1', rssi: -19 },
+  { id: '567.891.234', name: 'Device-5', rssi: -55 },
   { id: '234.567.891', name: 'Device-2', rssi: -28 },
-  { id: '345.678.912', name: 'Device-3', rssi: -37 },
   { id: '456.789.123', name: 'Device-4', rssi: -46 },
-  { id: '567.891.234', name: 'Device-5', rssi: -55 }
+  { id: '345.678.912', name: 'Device-3', rssi: -37 }
 ];
 let selectedDevice = {
   id: null,
@@ -18,6 +15,14 @@ let selectedDevice = {
   maxIntensity: 50.0,
   powerOnIntensity: 50.0
 };
+
+const deviceTable = new DeviceTable('nearby-devices-section');
+deviceTable.init();
+$('table').tablesort();
+
+const configWizard = new ConfigWizard('device-settings-section');
+configWizard.init();
+$('#device-id-dropdown').dropdown();
 
 const $deviceIntensityRange = $('#device-intensity-range');
 const $deviceIntensityLabel = $('#device-intensity-label');
@@ -43,38 +48,9 @@ $deviceIntensityRange.on('input', () => {
 
 // Device-Table > Refresh Button
 $('#nearby-devices-refresh-btn').on('click', () => {
-  $('#device-table tbody > *').remove();
-  $('#device-dropdown-values > *').remove();
-
   // TODO: Promise for connection
-
-  // Append devices to Device-Table
-  deviceList.forEach(device => {
-    $('#device-table tbody').append(`
-      <tr class="center aligned">
-        <td>${device.id}</td>
-        <td>${device.name}</td>
-        <td>${device.rssi}</td>
-        <td>
-          <div class="ui inverted small green labeled icon button flash-device-btn" data-device-id="${device.id}">
-          <i class="bolt icon"></i>
-          Flash
-          </div>
-        </td>
-      </tr>
-    `);
-
-    // Add device IDs to Device-ID-Dropdown
-    $('#device-dropdown-values').append(`
-      <div class="item" data-value="${device.id}">${device.id}</div>
-    `);
-  });
-
-  // Add event listener to Device-Table > Flash buttons
-  $('.flash-device-btn').on('click', event => {
-    // TODO: Push flashing to device
-    alert(`Flashing Light: ${event.target.dataset.deviceId}`);
-  });
+  deviceTable.refresh(deviceList);
+  configWizard.render(deviceList);
 });
 
 // Enable 'Connect' button after selecting a device
