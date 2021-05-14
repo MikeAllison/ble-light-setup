@@ -24,9 +24,9 @@ const $deviceTestPowerOnBtn = $('#device-test-power-on-btn');
 const $deviceTestPowerOffBtn = $('#device-test-power-off-btn');
 
 // Set Values > Max & Power On Intensity Label/Inputs
-$deviceIntensityLabel.text(`Intensity: ${selectedDevice.intensity}`);
-$('#device-intensity-max').val(selectedDevice.maxIntensity);
-$('#device-intensity-power-on').val(selectedDevice.powerOnIntensity);
+$deviceIntensityLabel.text(`Intensity: ${selectedDevice.intensity.toFixed(1)}`);
+$('#device-intensity-max').val(selectedDevice.maxIntensity.toFixed(1));
+$('#device-intensity-power-on').val(selectedDevice.powerOnIntensity.toFixed(1));
 
 // Set Values > Slider
 $deviceIntensityRange.on('input', () => {
