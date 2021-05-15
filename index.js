@@ -1,7 +1,7 @@
 import { DeviceTable } from './layouts/device-table.js';
 import { ConfigWizard } from './layouts/config-wizard.js';
 
-// Seed data
+// Seed Data
 const deviceList = [
   { id: '123.456.789', name: 'Device-1', rssi: -19 },
   { id: '567.891.234', name: 'Device-5', rssi: -55 },
@@ -9,12 +9,6 @@ const deviceList = [
   { id: '456.789.123', name: 'Device-4', rssi: -46 },
   { id: '345.678.912', name: 'Device-3', rssi: -37 }
 ];
-let selectedDevice = {
-  id: null,
-  intensity: 50.0,
-  maxIntensity: 50.0,
-  powerOnIntensity: 50.0
-};
 
 const deviceTable = new DeviceTable('nearby-devices-section');
 deviceTable.init();
@@ -24,121 +18,9 @@ const configWizard = new ConfigWizard('device-settings-section');
 configWizard.init();
 $('#device-id-dropdown').dropdown();
 
-const $deviceIntensityRange = $('#device-intensity-range');
-const $deviceIntensityLabel = $('#device-intensity-label');
-const $deviceTestPowerOnBtn = $('#device-test-power-on-btn');
-const $deviceTestPowerOffBtn = $('#device-test-power-off-btn');
-
-// Set Values > Max & Power On Intensity Label/Inputs
-$deviceIntensityLabel.text(`Intensity: ${selectedDevice.intensity.toFixed(1)}`);
-$('#device-intensity-max').val(selectedDevice.maxIntensity.toFixed(1));
-$('#device-intensity-power-on').val(selectedDevice.powerOnIntensity.toFixed(1));
-
-// Set Values > Slider
-$deviceIntensityRange.on('input', () => {
-  selectedDevice.intensity = +$('#device-intensity-range')[0].value;
-  console.log(`Setting device Intensity To: ${selectedDevice.intensity}`);
-
-  $deviceIntensityLabel.text(
-    `Intensity: ${selectedDevice.intensity.toFixed(1)}`
-  );
-  $('#device-intensity-max').val(selectedDevice.intensity.toFixed(1));
-  $('#device-intensity-power-on').val(selectedDevice.intensity.toFixed(1));
-});
-
-// Device-Table > Refresh Button
-$('#nearby-devices-refresh-btn').on('click', () => {
-  // TODO: Promise for connection
+deviceTable.refreshBtn.addEventListener('click', () => {
   deviceTable.refresh(deviceList);
   configWizard.render(deviceList);
-});
-
-// Enable 'Connect' button after selecting a device
-$('#device-id-dropdown').on('click', () => {
-  if ($('#device-id-dropdown .item').hasClass('selected')) {
-    $('#device-connect-btn').removeClass('disabled');
-  }
-});
-
-// Connect > Connect Button
-$('#device-connect-btn').on('click', () => {
-  selectedDevice.id = $('#device-id-dropdown > input').val();
-
-  // Test > Power Off Button
-  $deviceTestPowerOffBtn.on('click', () => {
-    const poweringOff = setInterval(() => {
-      selectedDevice.intensity -= 0.1;
-
-      if (selectedDevice.intensity <= 0) {
-        selectedDevice.intensity = 0;
-        clearInterval(poweringOff);
-      }
-
-      $('#device-test-intensity-heading > .value').text(
-        selectedDevice.intensity.toFixed(1)
-      );
-
-      if (selectedDevice.intensity === 0) {
-        alert(`Device with ID ${selectedDevice.id} has powered OFF`);
-      }
-    }, 5);
-  });
-
-  // Test > Power On Button
-  $deviceTestPowerOnBtn.on('click', () => {
-    const poweringOn = setInterval(() => {
-      selectedDevice.intensity += 0.1;
-
-      if (selectedDevice.intensity >= selectedDevice.powerOnIntensity) {
-        selectedDevice.intensity = selectedDevice.powerOnIntensity;
-        clearInterval(poweringOn);
-      }
-
-      $('#device-test-intensity-heading > .value').text(
-        selectedDevice.intensity.toFixed(1)
-      );
-
-      if (selectedDevice.intensity === selectedDevice.powerOnIntensity) {
-        alert(`Device with ID ${selectedDevice.id} has powered ON`);
-      }
-    }, 5);
-  });
-
-  $('#device-connect-step').removeClass('active');
-  $('#device-connect-form').addClass('hidden');
-
-  $('.device-id-heading > .value').text(selectedDevice.id);
-
-  $('#device-values-back-btn').on('click', () => {
-    $('#device-values-step').removeClass('active').addClass('disabled');
-    $('#device-values-form').addClass('hidden');
-    $('#device-connect-step').addClass('active');
-    $('#device-connect-form').removeClass('hidden');
-  });
-
-  $('#device-values-step').removeClass('disabled').addClass('active');
-  $('#device-values-form').removeClass('hidden');
-});
-
-// Set Values > Save
-$('#device-values-save-btn').on('click', () => {
-  selectedDevice.maxIntensity = +$('#device-intensity-max')[0].value;
-  selectedDevice.powerOnIntensity = +$('#device-intensity-power-on')[0].value;
-
-  $('#device-values-step').removeClass('active');
-  $('#device-values-form').addClass('hidden');
-
-  $('#device-test-intensity-heading > .value').text(selectedDevice.intensity);
-
-  $('#device-test-back-btn').on('click', () => {
-    $('#device-test-step').removeClass('active').addClass('disabled');
-    $('#device-test-form').addClass('hidden');
-    $('#device-values-step').addClass('active');
-    $('#device-values-form').removeClass('hidden');
-  });
-
-  $('#device-test-step').removeClass('disabled').addClass('active');
-  $('#device-test-form').removeClass('hidden');
 });
 
 class App {

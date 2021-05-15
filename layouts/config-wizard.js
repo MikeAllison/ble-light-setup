@@ -3,6 +3,12 @@ export class ConfigWizard extends HTMLElement {
     super();
 
     this.renderHook = document.getElementById(renderHook);
+    this.selectedDevice = {
+      id: null,
+      intensity: 50.0,
+      maxIntensity: 50.0,
+      powerOnIntensity: 50.0
+    };
 
     this.innerHTML = `
       <div class="ui three top attached steps">
@@ -187,6 +193,141 @@ export class ConfigWizard extends HTMLElement {
 
   init() {
     this.renderHook.append(this);
+    this.deviceIntensityRange = document.getElementById(
+      'device-intensity-range'
+    );
+    this.deviceIntensityLabel = document.getElementById(
+      'device-intensity-label'
+    );
+    this.deviceTestPowerOnBtn = document.getElementById(
+      'device-test-power-on-btn'
+    );
+    this.deviceTestPowerOffBtn = document.getElementById(
+      'device-test-power-off-btn'
+    );
+
+    // Set Values > Max & Power On Intensity Label/Inputs
+    this.deviceIntensityLabel.innerText = `Intensity: ${this.selectedDevice.intensity.toFixed(
+      1
+    )}`;
+    $('#device-intensity-max').val(this.selectedDevice.maxIntensity.toFixed(1));
+    $('#device-intensity-power-on').val(
+      this.selectedDevice.powerOnIntensity.toFixed(1)
+    );
+
+    // Set Values > Slider
+    this.deviceIntensityRange.addEventListener('input', () => {
+      this.selectedDevice.intensity = +$('#device-intensity-range')[0].value;
+      console.log(
+        `Setting device Intensity To: ${this.selectedDevice.intensity}`
+      );
+
+      this.deviceIntensityLabel.innerText = `Intensity: ${this.selectedDevice.intensity.toFixed(
+        1
+      )}`;
+      $('#device-intensity-max').val(this.selectedDevice.intensity.toFixed(1));
+      $('#device-intensity-power-on').val(
+        this.selectedDevice.intensity.toFixed(1)
+      );
+    });
+
+    // Enable 'Connect' button after selecting a device
+    $('#device-id-dropdown').on('click', () => {
+      if ($('#device-id-dropdown .item').hasClass('selected')) {
+        $('#device-connect-btn').removeClass('disabled');
+      }
+    });
+
+    // Connect > Connect Button
+    $('#device-connect-btn').on('click', () => {
+      this.selectedDevice.id = $('#device-id-dropdown > input').val();
+
+      // Test > Power Off Button
+      this.deviceTestPowerOffBtn.addEventListener('click', () => {
+        const poweringOff = setInterval(() => {
+          this.selectedDevice.intensity -= 0.1;
+
+          if (this.selectedDevice.intensity <= 0) {
+            this.selectedDevice.intensity = 0;
+            clearInterval(poweringOff);
+          }
+
+          $('#device-test-intensity-heading > .value').text(
+            this.selectedDevice.intensity.toFixed(1)
+          );
+
+          if (this.selectedDevice.intensity === 0) {
+            alert(`Device with ID ${this.selectedDevice.id} has powered OFF`);
+          }
+        }, 5);
+      });
+
+      // Test > Power On Button
+      this.deviceTestPowerOnBtn.addEventListener('click', () => {
+        const poweringOn = setInterval(() => {
+          this.selectedDevice.intensity += 0.1;
+
+          if (
+            this.selectedDevice.intensity >=
+            this.selectedDevice.powerOnIntensity
+          ) {
+            this.selectedDevice.intensity =
+              this.selectedDevice.powerOnIntensity;
+            clearInterval(poweringOn);
+          }
+
+          $('#device-test-intensity-heading > .value').text(
+            this.selectedDevice.intensity.toFixed(1)
+          );
+
+          if (
+            this.selectedDevice.intensity ===
+            this.selectedDevice.powerOnIntensity
+          ) {
+            alert(`Device with ID ${this.selectedDevice.id} has powered ON`);
+          }
+        }, 5);
+      });
+
+      $('#device-connect-step').removeClass('active');
+      $('#device-connect-form').addClass('hidden');
+
+      $('.device-id-heading > .value').text(this.selectedDevice.id);
+
+      $('#device-values-back-btn').on('click', () => {
+        $('#device-values-step').removeClass('active').addClass('disabled');
+        $('#device-values-form').addClass('hidden');
+        $('#device-connect-step').addClass('active');
+        $('#device-connect-form').removeClass('hidden');
+      });
+
+      $('#device-values-step').removeClass('disabled').addClass('active');
+      $('#device-values-form').removeClass('hidden');
+    });
+
+    // Set Values > Save
+    $('#device-values-save-btn').on('click', () => {
+      this.selectedDevice.maxIntensity = +$('#device-intensity-max')[0].value;
+      this.selectedDevice.powerOnIntensity = +$('#device-intensity-power-on')[0]
+        .value;
+
+      $('#device-values-step').removeClass('active');
+      $('#device-values-form').addClass('hidden');
+
+      $('#device-test-intensity-heading > .value').text(
+        this.selectedDevice.intensity
+      );
+
+      $('#device-test-back-btn').on('click', () => {
+        $('#device-test-step').removeClass('active').addClass('disabled');
+        $('#device-test-form').addClass('hidden');
+        $('#device-values-step').addClass('active');
+        $('#device-values-form').removeClass('hidden');
+      });
+
+      $('#device-test-step').removeClass('disabled').addClass('active');
+      $('#device-test-form').removeClass('hidden');
+    });
   }
 
   render(deviceList) {
@@ -196,7 +337,18 @@ export class ConfigWizard extends HTMLElement {
 
     deviceDropdownVals.innerHTML = null;
 
-    // TODO: Sort values
+    deviceList.sort((a, b) => {
+      let idA = a.id,
+        idB = b.id;
+
+      if (idA < idB) {
+        return -1;
+      }
+      if (idA > idB) {
+        return 1;
+      }
+      return 0;
+    });
 
     deviceList.forEach(device => {
       deviceDropdownVals.innerHTML += `

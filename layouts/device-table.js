@@ -8,6 +8,7 @@ export class DeviceTable extends HTMLTableElement {
       'class',
       'ui very compact sortable celled inverted definition table'
     );
+
     this.innerHTML = `
       <thead class="full-width">
         <tr class="center aligned">
@@ -38,6 +39,7 @@ export class DeviceTable extends HTMLTableElement {
 
   init() {
     this.renderHook.append(this);
+    this.refreshBtn = document.getElementById('nearby-devices-refresh-btn');
   }
 
   refresh(deviceList) {
@@ -62,10 +64,11 @@ export class DeviceTable extends HTMLTableElement {
     });
 
     // Add event listener to Device-Table > Flash buttons
-    const flashBtns = this.querySelectorAll('.flash-device-btn');
-    $('.flash-device-btn').on('click', event => {
-      // TODO: Push flashing to device
-      alert(`Flashing Light: ${event.target.dataset.deviceId}`);
+    const flashDeviceBtns = this.querySelectorAll('.flash-device-btn');
+    flashDeviceBtns.forEach(flashDeviceBtn => {
+      flashDeviceBtn.addEventListener('click', event => {
+        alert(`Flashing Light: ${event.target.dataset.deviceId}`);
+      });
     });
   }
 }
