@@ -3,6 +3,7 @@ export class ConfigWizard extends HTMLElement {
     super();
 
     this.renderHook = document.getElementById(renderHook);
+
     this.selectedDevice = {
       id: null,
       intensity: 50.0,
@@ -193,11 +194,20 @@ export class ConfigWizard extends HTMLElement {
 
   init() {
     this.renderHook.append(this);
+    // Connect Form Elements
+    this.deviceIdDropdown = document.getElementById('device-id-dropdown');
+    this.deviceConnectBtn = document.getElementById('device-connect-btn');
+
+    // Set Values Form Elements
+    this.deviceIntensityLabel = document.getElementById(
+      'device-intensity-label'
+    );
     this.deviceIntensityRange = document.getElementById(
       'device-intensity-range'
     );
-    this.deviceIntensityLabel = document.getElementById(
-      'device-intensity-label'
+    this.deviceIntensityMax = document.getElementById('device-intensity-max');
+    this.deviceIntensityPowerOn = document.getElementById(
+      'device-intensity-power-on'
     );
     this.deviceTestPowerOnBtn = document.getElementById(
       'device-test-power-on-btn'
@@ -210,14 +220,13 @@ export class ConfigWizard extends HTMLElement {
     this.deviceIntensityLabel.innerText = `Intensity: ${this.selectedDevice.intensity.toFixed(
       1
     )}`;
-    $('#device-intensity-max').val(this.selectedDevice.maxIntensity.toFixed(1));
-    $('#device-intensity-power-on').val(
-      this.selectedDevice.powerOnIntensity.toFixed(1)
-    );
+    this.deviceIntensityMax.value = this.selectedDevice.maxIntensity.toFixed(1);
+    this.deviceIntensityPowerOn.value =
+      this.selectedDevice.powerOnIntensity.toFixed(1);
 
     // Set Values > Slider
     this.deviceIntensityRange.addEventListener('input', () => {
-      this.selectedDevice.intensity = +$('#device-intensity-range')[0].value;
+      this.selectedDevice.intensity = +this.deviceIntensityRange.value;
       console.log(
         `Setting device Intensity To: ${this.selectedDevice.intensity}`
       );
@@ -225,21 +234,20 @@ export class ConfigWizard extends HTMLElement {
       this.deviceIntensityLabel.innerText = `Intensity: ${this.selectedDevice.intensity.toFixed(
         1
       )}`;
-      $('#device-intensity-max').val(this.selectedDevice.intensity.toFixed(1));
-      $('#device-intensity-power-on').val(
-        this.selectedDevice.intensity.toFixed(1)
-      );
+      this.deviceIntensityMax.value = this.selectedDevice.intensity.toFixed(1);
+      this.deviceIntensityPowerOn.value =
+        this.selectedDevice.intensity.toFixed(1);
     });
 
     // Enable 'Connect' button after selecting a device
-    $('#device-id-dropdown').on('click', () => {
+    this.deviceIdDropdown.addEventListener('click', () => {
       if ($('#device-id-dropdown .item').hasClass('selected')) {
         $('#device-connect-btn').removeClass('disabled');
       }
     });
 
     // Connect > Connect Button
-    $('#device-connect-btn').on('click', () => {
+    this.deviceConnectBtn.addEventListener('click', () => {
       this.selectedDevice.id = $('#device-id-dropdown > input').val();
 
       // Test > Power Off Button
@@ -257,7 +265,8 @@ export class ConfigWizard extends HTMLElement {
           );
 
           if (this.selectedDevice.intensity === 0) {
-            alert(`Device with ID ${this.selectedDevice.id} has powered OFF`);
+            $('.ui.mini.modal > .content').text('Device has powered OFF');
+            $('.ui.mini.modal').modal('show');
           }
         }, 5);
       });
@@ -284,7 +293,8 @@ export class ConfigWizard extends HTMLElement {
             this.selectedDevice.intensity ===
             this.selectedDevice.powerOnIntensity
           ) {
-            alert(`Device with ID ${this.selectedDevice.id} has powered ON`);
+            $('.ui.mini.modal > .content').text('Device has powered ON');
+            $('.ui.mini.modal').modal('show');
           }
         }, 5);
       });
@@ -307,9 +317,8 @@ export class ConfigWizard extends HTMLElement {
 
     // Set Values > Save
     $('#device-values-save-btn').on('click', () => {
-      this.selectedDevice.maxIntensity = +$('#device-intensity-max')[0].value;
-      this.selectedDevice.powerOnIntensity = +$('#device-intensity-power-on')[0]
-        .value;
+      this.selectedDevice.maxIntensity = +this.deviceIntensityMax.value;
+      this.selectedDevice.powerOnIntensity = +this.deviceIntensityPowerOn.value;
 
       $('#device-values-step').removeClass('active');
       $('#device-values-form').addClass('hidden');
