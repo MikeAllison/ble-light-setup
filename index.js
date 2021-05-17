@@ -1,6 +1,7 @@
 import { DeviceTable } from './layouts/device-table.js';
 import { ConfigWizard } from './layouts/config-wizard.js';
 import { AppModal } from './layouts/app-modal.js';
+import { BLELight } from './components/ble-devices.js';
 
 class App {
   constructor() {}
@@ -8,11 +9,11 @@ class App {
   static init() {
     // Seed Data
     const deviceList = [
-      { id: '123.456.789', name: 'Device-1', rssi: -19 },
-      { id: '567.891.234', name: 'Device-5', rssi: -55 },
-      { id: '234.567.891', name: 'Device-2', rssi: -28 },
-      { id: '456.789.123', name: 'Device-4', rssi: -46 },
-      { id: '345.678.912', name: 'Device-3', rssi: -37 }
+      new BLELight('123.456.789', 'Device-1', -19),
+      new BLELight('567.891.234', 'Device-5', -55),
+      new BLELight('234.567.891', 'Device-2', -28),
+      new BLELight('456.789.123', 'Device-4', -46),
+      new BLELight('345.678.912', 'Device-3', -37)
     ];
 
     const deviceTable = new DeviceTable('nearby-devices-section');

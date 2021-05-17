@@ -6,7 +6,6 @@ export class AppModal extends HTMLElement {
 
     this.innerHTML = `
       <div class="ui mini modal">
-        <i class="close icon"></i>
         <div class="header">
           Alert
         </div>

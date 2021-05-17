@@ -1,13 +1,15 @@
 class BLEDevice {
-  constructor(id, name, rssiVal) {
+  constructor(id, name, rssi) {
     this.id = id;
     this.name = name;
-    this.rssiVal = rssiVal;
+    this.rssi = rssi;
   }
 }
 
 export class BLELight extends BLEDevice {
-  constructor() {
+  constructor(id, name, rssi) {
+    super(id, name, rssi);
+
     this.intensity;
     this.maxIntensity;
     this.powerOnIntensity;
